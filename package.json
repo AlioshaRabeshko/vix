@@ -6,7 +6,8 @@
   "scripts": {
     "mysql": "docker-compose up -d",
     "migrate": "prisma migrate dev",
-    "start": "tsx index.ts"
+    "start": "tsx index.ts",
+    "lint": "eslint . --ext .ts --fix"
   },
   "repository": {
     "type": "git",
