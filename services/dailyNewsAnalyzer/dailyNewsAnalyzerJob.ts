@@ -1,5 +1,5 @@
-import prisma from "services/prisma/prisma";
-import analyzeDailyNews from "./analyzeDailyNews";
+import prisma from 'services/prisma/prisma';
+import analyzeDailyNews from './analyzeDailyNews';
 
 export const queries = ['NASDAQ, S&P 500', 'stock market', 'economy', 'business'];
 
@@ -9,7 +9,6 @@ async function dailyNewsAnalyzerJob() {
   for (const query of queries) {
     const analysis = await analyzeDailyNews(todayString, todayString, query);
     if (!analysis) {
-      console.log(`No articles found for query: ${query}`);
       continue;
     }
 

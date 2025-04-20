@@ -1,36 +1,27 @@
 import 'dotenv/config'
+import cron from 'node-cron';
 import putCallRatioSyncJob from 'services/callPutRatio/putCallRatioSyncJob';
 import dailyNewsAnalyzerJob from 'services/dailyNewsAnalyzer/dailyNewsAnalyzerJob';
-import getFearIndex from 'services/fearIndex/getFearIndex';
 import googleTrendsJob from 'services/googleTrends/googleTrendsJob';
 import stockDataSyncJob from 'services/stockData/stockDataSyncJob';
+import updateFearIndexJob from 'services/fearIndex/updateFearIndexJob';
 
+cron.schedule('0 2,18 * * *', () => { // every day at 2 AM and 6 PM
+  googleTrendsJob().catch((error) => console.error('Error running googleTrendsJob:', error))
+});
 
+cron.schedule('0 12,16,23 * * *', () => { // every day at 12 PM, 4 PM, and 11 PM
+  putCallRatioSyncJob().catch((error) => console.error('Error running putCallRatioSyncJob:', error))
+});
 
-async function main() {
-  try {
-    await dailyNewsAnalyzerJob();
-  } catch (error) {
-    console.error('Error running dailyNewsAnalyzerJob:', error);
-  }
+cron.schedule('0 12,16,23 * * *', () => { // every day at 12 PM, 4 PM, and 11 PM
+  dailyNewsAnalyzerJob().catch((error) => console.error('Error running dailyNewsAnalyzerJob:', error))
+});
 
-  try {
-    await putCallRatioSyncJob();
-  } catch (error) {
-    console.error('Error running putCallRatioSyncJob:', error);
-  }
+cron.schedule('*/20 * * * *', () => { // every 20 minutes
+  stockDataSyncJob().catch((error) => console.error('Error running stockDataSyncJob:', error))
+});
 
-  try {
-    await stockDataSyncJob();
-  } catch (error) {
-    console.error('Error running stockDataSyncJob:', error);
-  }
-
-  try {
-    await googleTrendsJob();
-  } catch (error) {
-    console.error('Error running googleTrendsJob:', error);
-  }
-}
-
-main();
+cron.schedule('*/20 * * * *', () => { // every 20 minutes
+  updateFearIndexJob().catch((error) => console.error('Error running updateFearIndexJob:', error))
+});

@@ -62,7 +62,7 @@ async function googleTrendsJob() {
           date: new Date(date),
         },
       },
-      update: { value },
+      update: {value},
       create: {
         keyword,
         value,

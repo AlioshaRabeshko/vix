@@ -19,10 +19,9 @@ async function putCallRatioSyncJob() {
       data: {value: ratio},
     });
   } catch (error) {
-    console.error('Error fetching put/call ratio:', error);
     const {value: latestCallPutRatio} = await prisma.put_call_ratio.findFirst({
-      select: { value: true },
-      orderBy: { timestamp: 'desc' },
+      select: {value: true},
+      orderBy: {timestamp: 'desc'},
     });
 
     await prisma.put_call_ratio.create({

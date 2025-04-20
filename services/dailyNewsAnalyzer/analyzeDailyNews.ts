@@ -1,5 +1,5 @@
-import ChatGptClient from "services/chatGpt/ChatGptClient";
-import NewsApiClient from "services/newsApi/NewsApiClient";
+import ChatGptClient from 'services/chatGpt/ChatGptClient';
+import NewsApiClient from 'services/newsApi/NewsApiClient';
 
 async function analyzeDailyNews(startDate, endDate, type) {
   const newsApi = new NewsApiClient();

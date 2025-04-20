@@ -7,7 +7,7 @@ class NewsApiClient extends NewsAPI {
 
   async getNews(dateStart, dateEnd, query) {
     const response = await this.v2.everything({
-      q: 'stock market, economy',
+      q: query,
       from: dateStart,
       to: dateEnd,
       language: 'en',
