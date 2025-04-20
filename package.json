@@ -1,0 +1,34 @@
+{
+  "name": "vix",
+  "version": "1.0.0",
+  "description": "Greed and fear index analyzer",
+  "main": "index.ts",
+  "scripts": {
+    "mysql": "docker-compose up -d",
+    "migrate": "prisma migrate dev",
+    "start": "tsx index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlioshaRabeshko/vix.git"
+  },
+  "author": "Oleksii Rabeshko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlioshaRabeshko/vix/issues"
+  },
+  "homepage": "https://github.com/AlioshaRabeshko/vix#readme",
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "@types/node": "^22.14.1",
+    "axios": "^1.8.4",
+    "dotenv": "^16.5.0",
+    "google-trends-api": "^4.9.2",
+    "newsapi": "^2.4.1",
+    "openai": "^4.95.1",
+    "prisma": "^6.6.0",
+    "tslib": "^2.8.1",
+    "tsx": "^4.19.3",
+    "yahoo-finance2": "^2.13.3"
+  }
+}

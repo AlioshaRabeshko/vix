@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model daily_news_analysis {
+  id                   Int                        @id @default(autoincrement())
+  timestamp       DateTime                   @default(now())
+  rating          Int
+  summary         String                    @db.Text()
+  query           String
+}
+
+model stock_data {
+  id                   Int                        @id @default(autoincrement())
+  timestamp       DateTime                   @default(now())
+  ticker  String?
+  price Int?
+  forwardPe     Int?
+  trailingPe Int?
+}
+
+model put_call_ratio {
+  id                   Int                        @id @default(autoincrement())
+  timestamp       DateTime                   @default(now())
+  value           Float
+}
+
+model google_trends {
+  id        Int      @id @default(autoincrement())
+  keyword   String
+  value     Int      // Interest (0–100)
+  date      DateTime
+  timestamp DateTime @default(now())
+  @@unique([keyword, date], name: "keyword_date")
+}
+
+model vix {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  value     Int
+  summary   String?
+}
