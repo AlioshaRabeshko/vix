@@ -59,14 +59,14 @@ async function googleTrendsJob() {
       where: {
         keyword_date: {
           keyword,
-          date,
+          date: new Date(date),
         },
       },
       update: { value },
       create: {
         keyword,
         value,
-        date,
+        date: new Date(date),
       },
     })
   }
