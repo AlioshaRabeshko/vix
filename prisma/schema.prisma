@@ -26,9 +26,9 @@ model stock_data {
   id                   Int                        @id @default(autoincrement())
   timestamp       DateTime                   @default(now())
   ticker  String?
-  price Int?
-  forwardPe     Int?
-  trailingPe Int?
+  price Float?
+  forwardPe     Float?
+  trailingPe Float?
 }
 
 model put_call_ratio {
@@ -49,6 +49,6 @@ model google_trends {
 model vix {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
-  value     Int
+  value     Float
   summary   String?
 }
