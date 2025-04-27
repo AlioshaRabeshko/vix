@@ -8,6 +8,7 @@ async function analyzeDailyNews(startDate, endDate, type) {
   const articles = await newsApi.getNews(startDate, endDate, type);//, 'NASDAQ, S&P 500');
 
   if (articles.length === 0) {
+    console.log('No articles found for the given date range and type.');
     return;
   }
 
