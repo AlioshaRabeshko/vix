@@ -14,7 +14,7 @@ async function getETFData(ticker: string) {
 };
 
 async function stockDataSyncJob() {
-  for (const ticker of ['QQQm', 'VOO', '^VIX', 'BRK-B', 'SCHD', 'GLD', 'JNK']) {
+  for (const ticker of ['QQQm', 'VOO', '^VIX', 'BRK-B', 'SCHD', 'GLD', 'JNK', '^VXN']) {
     const data = await getETFData(ticker);
     
     await prisma.stock_data.create({data: {...data, ticker}});

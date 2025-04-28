@@ -5,10 +5,10 @@ async function analyzeDailyNews(startDate, endDate, type) {
   const newsApi = new NewsApiClient();
   const chatGPTClient = new ChatGptClient();
 
-  const articles = await newsApi.getNews(startDate, endDate, type);//, 'NASDAQ, S&P 500');
+  const articles = await newsApi.getNews(startDate, endDate, type);
 
   if (articles.length === 0) {
-    console.log('No articles found for the given date range and type.');
+    console.info('No articles found for the given date range and type.');
     return;
   }
 

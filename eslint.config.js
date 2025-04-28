@@ -5,7 +5,6 @@ module.exports = {
     parserOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      // project: "./tsconfig.json", // якщо використовуєш type-aware linting
     },
     globals: {
       console: 'readonly',
@@ -25,9 +24,9 @@ module.exports = {
     // ESLint base rules
     'no-console': ['error', {allow: ['warn', 'error', 'info']}],
     'no-debugger': 'warn',
-    'no-unused-vars': 'off', // перекривається TypeScript-версією
-    quotes: ['error', 'single'],             // Одинарні лапки
-    'object-curly-spacing': ['error', 'never'], // Без пробілів між { і }
+    'no-unused-vars': 'off',
+    quotes: ['error', 'single'],
+    'object-curly-spacing': ['error', 'never'],
   },
   ignores: [
     'dist/**',

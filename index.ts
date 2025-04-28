@@ -10,11 +10,11 @@ cron.schedule('0 2,18 * * *', () => { // every day at 2 AM and 6 PM
   googleTrendsJob().catch((error) => console.error('Error running googleTrendsJob:', error))
 });
 
-cron.schedule('0 12,16,23 * * *', () => { // every day at 12 PM, 4 PM, and 11 PM
+cron.schedule('0 10,12,16,23 * * *', () => { // every day at 10 AM, 12 AM, 4 PM, and 11 PM
   putCallRatioSyncJob().catch((error) => console.error('Error running putCallRatioSyncJob:', error))
 });
 
-cron.schedule('0 12,16,23 * * *', () => { // every day at 12 PM, 4 PM, and 11 PM
+cron.schedule('0 12,16,23 * * *', () => { // every day at 12 AM, 4 PM, and 11 PM
   dailyNewsAnalyzerJob().catch((error) => console.error('Error running dailyNewsAnalyzerJob:', error))
 });
 
