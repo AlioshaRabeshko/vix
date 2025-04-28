@@ -15,34 +15,35 @@ datasource db {
 }
 
 model daily_news_analysis {
-  id                   Int                        @id @default(autoincrement())
-  timestamp       DateTime                   @default(now())
-  rating          Int
-  summary         String                    @db.Text()
-  query           String
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  rating    Int
+  summary   String   @db.Text()
+  query     String
 }
 
 model stock_data {
-  id                   Int                        @id @default(autoincrement())
-  timestamp       DateTime                   @default(now())
-  ticker  String?
-  price Float?
-  forwardPe     Float?
+  id         Int      @id @default(autoincrement())
+  timestamp  DateTime @default(now())
+  ticker     String?
+  price      Float?
+  forwardPe  Float?
   trailingPe Float?
 }
 
 model put_call_ratio {
-  id                   Int                        @id @default(autoincrement())
-  timestamp       DateTime                   @default(now())
-  value           Float
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  value     Float
 }
 
 model google_trends {
   id        Int      @id @default(autoincrement())
   keyword   String
-  value     Int      // Interest (0–100)
+  value     Int // Interest (0–100)
   date      DateTime
   timestamp DateTime @default(now())
+
   @@unique([keyword, date], name: "keyword_date")
 }
 
