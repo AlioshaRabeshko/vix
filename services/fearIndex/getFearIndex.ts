@@ -1,5 +1,5 @@
 import {queries} from 'services/dailyNewsAnalyzer/dailyNewsAnalyzerJob';
-import prisma from 'services/prisma/prisma';
+import prisma from 'common/prisma/prisma';
 
 async function getVolatilityIndex(toDate: Date) {
   const {price} = await prisma.stock_data.findFirst({

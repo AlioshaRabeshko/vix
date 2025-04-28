@@ -1,4 +1,4 @@
-import prisma from 'services/prisma/prisma';
+import prisma from 'common/prisma/prisma';
 import yahooFinance from 'yahoo-finance2';
 
 async function getETFData(ticker: string) {

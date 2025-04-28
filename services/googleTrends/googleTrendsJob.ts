@@ -1,5 +1,5 @@
 import googleTrends from 'google-trends-api';
-import prisma from 'services/prisma/prisma';
+import prisma from 'common/prisma/prisma';
 
 export const keywords = [
   'recession',

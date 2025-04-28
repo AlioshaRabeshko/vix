@@ -1,7 +1,7 @@
-import ChatGptClient from 'services/chatGpt/ChatGptClient';
-import NewsApiClient from 'services/newsApi/NewsApiClient';
+import ChatGptClient from 'common/chatGpt/ChatGptClient';
+import NewsApiClient from 'common/newsApi/NewsApiClient';
 
-async function analyzeDailyNews(startDate, endDate, type) {
+async function analyzeNews(startDate, endDate, type) {
   const newsApi = new NewsApiClient();
   const chatGPTClient = new ChatGptClient();
 
@@ -17,8 +17,7 @@ async function analyzeDailyNews(startDate, endDate, type) {
     .map(({title, description}) => `Title: ${title}. Description: ${description}`)
     .join('\n');
 
-  const analysis = await chatGPTClient.analyzeNews(articlesText);
-  return JSON.parse(analysis);
+  return await chatGPTClient.analyzeNews(articlesText);
 }
 
-export default analyzeDailyNews;
+export default analyzeNews;

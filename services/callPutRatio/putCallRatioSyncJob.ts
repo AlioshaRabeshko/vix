@@ -1,8 +1,8 @@
-import prisma from 'services/prisma/prisma';
+import prisma from 'common/prisma/prisma';
 import WebSocket from 'ws';
 
 function getTodayPutCallRatio() {
-  return new Promise((resolve, reject) => {
+  return new Promise<number>((resolve, reject) => {
     const socket = new WebSocket('wss://data.tradingview.com/socket.io/websocket', {
       origin: 'https://www.tradingview.com',
     });
@@ -59,7 +59,7 @@ function getTodayPutCallRatio() {
 }
 
 async function putCallRatioSyncJob() {
-  const putCallRatio = await getTodayPutCallRatio() as number;
+  const putCallRatio = await getTodayPutCallRatio();
   await prisma.put_call_ratio.create({
     data: {value: putCallRatio},
   });

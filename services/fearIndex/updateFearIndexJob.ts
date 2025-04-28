@@ -1,4 +1,4 @@
-import prisma from 'services/prisma/prisma';
+import prisma from 'common/prisma/prisma';
 import getFearIndex from './getFearIndex';
 
 async function updateFearIndexJob() {

@@ -14,7 +14,7 @@ class ChatGptClient extends OpenAI {
       input: articles
     });
 
-    return response.output_text;
+    return JSON.parse(response.output_text);
   }
 }
 
