@@ -11,7 +11,7 @@ async function dailyNewsAnalyzerJob() {
 
   for (const query of queries) {
     const analysis = await analyzeNews(yesterdayString, todayString, query);
-    if (!analysis) {
+    if (!analysis || !analysis.rating || !analysis.summary) {
       continue;
     }
 

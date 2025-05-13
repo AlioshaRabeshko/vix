@@ -1,7 +1,7 @@
 import ChatGptClient from 'common/chatGpt/ChatGptClient';
 import NewsApiClient from 'common/newsApi/NewsApiClient';
 
-async function analyzeNews(startDate, endDate, type) {
+async function analyzeNews(startDate: string, endDate: string, type: string) {
   const newsApi = new NewsApiClient();
   const chatGPTClient = new ChatGptClient();
 

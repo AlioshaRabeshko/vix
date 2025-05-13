@@ -54,7 +54,10 @@ function getTodayPutCallRatio() {
         }
       }
     });
-    socket.on('error', reject);
+    socket.on('error', (error) => {
+      socket.close();
+      reject(error);
+    });
   });
 }
 

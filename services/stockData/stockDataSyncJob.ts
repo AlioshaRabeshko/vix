@@ -6,7 +6,7 @@ async function getETFData(ticker: string) {
     modules: ['summaryDetail', 'defaultKeyStatistics', 'financialData', 'price'],
   });
 
-  const price = result.price?.regularMarketPrice || null;
+  const price = result.price?.regularMarketPrice|| null;
   const trailingPe = result.summaryDetail?.trailingPE || null;
   const forwardPe = result.defaultKeyStatistics?.forwardPE || null
 
