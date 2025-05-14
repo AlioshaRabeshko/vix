@@ -1,6 +1,6 @@
 {
   "name": "vix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Greed and fear index analyzer",
   "main": "index.ts",
   "scripts": {
