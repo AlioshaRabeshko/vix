@@ -53,3 +53,68 @@ model vix {
   value     Float
   summary   String?
 }
+
+model server_logs {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  level     String
+  path      String
+  message   String
+}
+
+model crypto_symbol_data {
+  timestamp        DateTime
+  symbol           String
+  openPrice        String
+  closePrice       String
+  high             String
+  low              String
+  volume           String
+  quoteAssetVolume String
+  trades           String
+
+  @@unique([symbol, timestamp], name: "symbol_timestamp")
+}
+
+model crypto_macro_data {
+  timestamp DateTime @unique
+
+  eth_dominance          String
+  btc_dominance          String
+  stablecoin_volume_24h  String
+  derivatives_volume_24h String
+  today_change_percent   String
+
+  total_volume_24h      String
+  total_market_cap      String
+  stablecoin_market_cap String
+  altcoin_market_cap    String
+  defi_market_cap       String
+
+  fear_index   Int
+  transactions Int
+  hash_rate    Int
+}
+
+model crypto_metadata {
+  timestamp                DateTime
+  symbol                   String
+  circulating_supply       String
+  total_supply             String
+  price                    String
+  volume_24h               String
+  market_cap               String
+  market_cap_dominance     String
+  fully_diluted_market_cap String
+
+  @@unique([symbol, timestamp], name: "symbol_timestamp")
+}
+
+model crypto_whale_alerts {
+  timestamp DateTime
+  symbol    String
+  amount    Int
+  value_usd Int
+
+  @@unique([symbol, timestamp], name: "symbol_timestamp")
+}

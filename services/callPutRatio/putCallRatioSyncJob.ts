@@ -1,3 +1,4 @@
+import serverLogger from 'common/logger/serverLogger';
 import prisma from 'common/prisma/prisma';
 import WebSocket from 'ws';
 
@@ -50,7 +51,7 @@ function getTodayPutCallRatio() {
             resolve(parsed.p[1].v.lp);
           }
         } catch (err) {
-          console.error('Failed to parse message:', err);
+          serverLogger.to('putCallRatioSyncJob').error('Failed to parse message:', err);
         }
       }
     });

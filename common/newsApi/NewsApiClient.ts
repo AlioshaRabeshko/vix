@@ -1,3 +1,5 @@
+import serverLogger from "common/logger/serverLogger";
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const NewsAPI = require('newsapi');
 
@@ -16,7 +18,7 @@ class NewsApiClient extends NewsAPI {
     });
 
     if (!response.articles || response.articles.length === 0) {
-      console.info('No articles found for the given date range and query.');
+      serverLogger.to('NewsApiClient').info('No articles found for the given date range and query.');
       return [];
     }
 

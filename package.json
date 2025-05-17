@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/AlioshaRabeshko/vix#readme",
   "dependencies": {
+    "@binance/connector-typescript": "^0.3.16",
     "@prisma/client": "^6.6.0",
     "@types/node": "^22.14.1",
     "@typescript-eslint/eslint-plugin": "^8.30.1",

@@ -1,4 +1,5 @@
 import ChatGptClient from 'common/chatGpt/ChatGptClient';
+import serverLogger from 'common/logger/serverLogger';
 import NewsApiClient from 'common/newsApi/NewsApiClient';
 
 async function analyzeNews(startDate: string, endDate: string, type: string) {
@@ -8,7 +9,7 @@ async function analyzeNews(startDate: string, endDate: string, type: string) {
   const articles = await newsApi.getNews(startDate, endDate, type);
 
   if (articles.length === 0) {
-    console.info('No articles found for the given date range and type.');
+    serverLogger.to('analyzeNews').info('No articles found for the given date range and type.');
     return;
   }
 

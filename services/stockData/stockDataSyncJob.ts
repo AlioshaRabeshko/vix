@@ -14,7 +14,15 @@ async function getETFData(ticker: string) {
 };
 
 async function stockDataSyncJob() {
-  for (const ticker of ['QQQm', 'VOO', '^VIX', 'BRK-B', 'SCHD', 'GLD', 'JNK', '^VXN']) {
+  for (const ticker of ['QQQm', 'VOO', 'BRK-B', 'SCHD', 'JNK']) {
+    const data = await getETFData(ticker);
+    
+    await prisma.stock_data.create({data: {...data, ticker}});
+  }
+}
+
+export async function macroEconomicSyncJob() {
+  for (const ticker of ['DX-Y.NYB', '^GSPC', '^IXIC', 'GC=F', '^VXN', '^VIX']) {
     const data = await getETFData(ticker);
     
     await prisma.stock_data.create({data: {...data, ticker}});

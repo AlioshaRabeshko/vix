@@ -1,9 +1,9 @@
 import googleTrends from 'google-trends-api';
 import prisma from 'common/prisma/prisma';
+import serverLogger from 'common/logger/serverLogger';
 
 export const keywords = [
   'recession',
-  'layoffs',
   'usd collapse',
   'bank collapse',
   'financial crisis',
@@ -12,13 +12,15 @@ export const keywords = [
   'stock market panic',
 
   'should I sell stocks',
-  'should I pull out of the market'
+  'should I pull out of the market',
+  'bitcoin',
+  'ethereum'
 ];
 
 export async function getGoogleTrends() {
   const now = new Date()
   const oneMonthAgo = new Date()
-  oneMonthAgo.setDate(now.getDate() - 30)
+  oneMonthAgo.setDate(now.getDate() - 90)
   const trendsData = [];
 
   for (const keyword of keywords) {
@@ -44,7 +46,7 @@ export async function getGoogleTrends() {
         })
       }
     } catch (err) {
-      console.error(`Failed to fetch trend for "${keyword}":`, err)
+      serverLogger.to('googleTrendsJob').error(`Failed to fetch trend for "${keyword}":`, err)
     }
 
     await new Promise((resolve) => setTimeout(resolve, 10000))
