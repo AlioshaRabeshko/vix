@@ -5,7 +5,7 @@ import dailyNewsAnalyzerJob from 'services/dailyNewsAnalyzer/dailyNewsAnalyzerJo
 import googleTrendsJob from 'services/googleTrends/googleTrendsJob';
 import stockDataSyncJob, {macroEconomicSyncJob} from 'services/stockData/stockDataSyncJob';
 import updateFearIndexJob from 'services/fearIndex/updateFearIndexJob';
-import syncCryptoDataJob from 'services/syncCryptoData/syncCryptoDataJob';
+import syncCryptoDataJob, {syncBinanceSymbolsData} from 'services/syncCryptoData/syncCryptoDataJob';
 import serverLogger from 'common/logger/serverLogger';
 
 serverLogger.info('Starting cron server');
@@ -42,6 +42,18 @@ cron.schedule('*/5 * * * *', () => { // every 5 minutes
 
 cron.schedule('*/5 * * * *', () => { // every 5 minutes
   updateFearIndexJob()
+    .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
+    .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
+});
+
+cron.schedule('*/5 * * * *', () => { // every 5 minutes
+  syncBinanceSymbolsData('BTCUSDT')
+    .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
+    .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
+});
+
+cron.schedule('*/5 * * * *', () => { // every 5 minutes
+  syncBinanceSymbolsData('ETHUSDT')
     .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
     .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
 });

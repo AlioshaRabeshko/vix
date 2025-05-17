@@ -112,13 +112,13 @@ async function syncWhaleAlerts() {
   });
 }
 
-async function syncBinanceSymbolsData(symbol: string) {
+export async function syncBinanceSymbolsData(symbol: string) {
   const apiKey = process.env.BINANCE_API_KEY;
   const apiSecret = process.env.BINANCE_API_SECRET;
   const binance = new Spot(apiKey, apiSecret);
 
   const klines = await binance.uiklines(symbol, Interval['5m'], {limit: 1000, endTime: Date.now()});
-  klines.unshift();
+  klines.shift();
   await prisma.crypto_symbol_data.createMany({
     data: klines.map(([timestamp, openPrice, high, low, closePrice, volume, quoteAssetVolume, trades]) => ({
       symbol,
@@ -133,7 +133,6 @@ async function syncBinanceSymbolsData(symbol: string) {
     })),
     skipDuplicates: true,
   });
-
 }
 
 async function syncCryptoDataJob() {
@@ -154,18 +153,6 @@ async function syncCryptoDataJob() {
     await syncWhaleAlerts();
   } catch (error) {
     logger.error('Error fetching whale alerts:', error);
-  }
-
-  try {
-    await syncBinanceSymbolsData('BTCUSDT');
-  } catch (error) {
-    logger.error('Error syncing BTCUSDT data:', error);
-  }
-
-  try {
-    await syncBinanceSymbolsData('ETHUSDT');
-  } catch (error) {
-    logger.error('Error syncing ETHUSDT data:', error);
   }
 }
 
