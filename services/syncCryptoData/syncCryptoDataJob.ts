@@ -118,7 +118,7 @@ export async function syncBinanceSymbolsData(symbol: string) {
   const binance = new Spot(apiKey, apiSecret);
 
   const klines = await binance.uiklines(symbol, Interval['5m'], {limit: 1000, endTime: Date.now()});
-  klines.shift();
+  klines.pop();
   await prisma.crypto_symbol_data.createMany({
     data: klines.map(([timestamp, openPrice, high, low, closePrice, volume, quoteAssetVolume, trades]) => ({
       symbol,
