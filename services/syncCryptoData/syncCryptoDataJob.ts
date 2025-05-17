@@ -23,7 +23,7 @@ async function getFearGreedIndex() {
   return response.data.data.value;
 }
 
-async function syncGlobalMetricsRequest() {
+export async function syncGlobalMetricsRequest() {
   const response = await axios.get('https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest', {
     headers: {
       'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY,
@@ -39,17 +39,17 @@ async function syncGlobalMetricsRequest() {
   await prisma.crypto_macro_data.create({
     data: {
       timestamp: new Date(),
-      eth_dominance: data.eth_dominance,
-      btc_dominance: data.btc_dominance,
-      stablecoin_volume_24h: data.stablecoin_volume_24h,
-      stablecoin_market_cap: data.stablecoin_market_cap,
-      derivatives_volume_24h: data.derivatives_volume_24h,
-      today_change_percent: data.today_change_percent,
+      eth_dominance: String(data.eth_dominance),
+      btc_dominance: String(data.btc_dominance),
+      stablecoin_volume_24h: String(data.stablecoin_volume_24h),
+      stablecoin_market_cap: String(data.stablecoin_market_cap),
+      derivatives_volume_24h: String(data.derivatives_volume_24h),
+      today_change_percent: String(data.today_change_percent),
   
-      total_market_cap: data.quote.USD.total_market_cap,
-      total_volume_24h: data.quote.USD.total_volume_24h,
-      altcoin_market_cap: data.quote.USD.altcoin_market_cap,
-      defi_market_cap: data.quote.USD.defi_market_cap,
+      total_market_cap: String(data.quote.USD.total_market_cap),
+      total_volume_24h: String(data.quote.USD.total_volume_24h),
+      altcoin_market_cap: String(data.quote.USD.altcoin_market_cap),
+      defi_market_cap: String(data.quote.USD.defi_market_cap),
       fear_index: fearGreedIndex,
       transactions: transactionCount,
       hash_rate: hashRate

@@ -9,9 +9,6 @@ import syncCryptoDataJob from 'services/syncCryptoData/syncCryptoDataJob';
 import serverLogger from 'common/logger/serverLogger';
 
 serverLogger.info('Starting cron server');
-serverLogger.info('Starting cron server');
-serverLogger.info('Starting cron server');
-serverLogger.info('Starting cron server');
 
 cron.schedule('0 2,18 * * *', () => { // every day at 2 AM and 6 PM
   googleTrendsJob()
