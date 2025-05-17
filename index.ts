@@ -30,7 +30,7 @@ cron.schedule('0 12,16,23 * * *', () => { // every day at 12 AM, 4 PM, and 11 PM
 
 cron.schedule('*/5 * * * *', () => { // every 5 minutes
   stockDataSyncJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('stockDataSyncJob completed successfully'))
     .catch((error) => serverLogger.error('Error running stockDataSyncJob:', error))
 });
 
