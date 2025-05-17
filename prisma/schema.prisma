@@ -59,7 +59,7 @@ model server_logs {
   timestamp DateTime @default(now())
   level     String
   path      String
-  message   String
+  message   String @db.Text
 }
 
 model crypto_symbol_data {

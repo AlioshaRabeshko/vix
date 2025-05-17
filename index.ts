@@ -21,36 +21,36 @@ cron.schedule('0 2,18 * * *', () => { // every day at 2 AM and 6 PM
 
 cron.schedule('0 10,12,16,23 * * *', () => { // every day at 10 AM, 12 AM, 4 PM, and 11 PM
   putCallRatioSyncJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('putCallRatioSyncJob completed successfully'))
     .catch((error) => serverLogger.error('Error running putCallRatioSyncJob:', error))
 });
 
 cron.schedule('0 12,16,23 * * *', () => { // every day at 12 AM, 4 PM, and 11 PM
   dailyNewsAnalyzerJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('dailyNewsAnalyzerJob completed successfully'))
     .catch((error) => serverLogger.error('Error running dailyNewsAnalyzerJob:', error))
 });
 
-cron.schedule('*/5 * * * *', () => { // every 20 minutes
+cron.schedule('*/5 * * * *', () => { // every 5 minutes
   stockDataSyncJob()
     .then(() => serverLogger.info('googleTrendsJob completed successfully'))
     .catch((error) => serverLogger.error('Error running stockDataSyncJob:', error))
 });
 
-cron.schedule('*/5 * * * *', () => { // every 20 minutes
+cron.schedule('*/5 * * * *', () => { // every 5 minutes
   macroEconomicSyncJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('macroEconomicSyncJob completed successfully'))
     .catch((error) => serverLogger.error('Error running macroEconomicSyncJob:', error))
 });
 
-cron.schedule('*/20 * * * *', () => { // every 20 minutes
+cron.schedule('*/5 * * * *', () => { // every 5 minutes
   updateFearIndexJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
     .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
 });
 
 cron.schedule('*/15 * * * *', () => { // every 15 minutes
   syncCryptoDataJob()
-    .then(() => serverLogger.info('googleTrendsJob completed successfully'))
+    .then(() => serverLogger.info('syncCryptoDataJob completed successfully'))
     .catch((error) => serverLogger.error('Error running syncCryptoDataJob:', error))
 });
