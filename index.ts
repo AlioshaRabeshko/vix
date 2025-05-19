@@ -48,14 +48,14 @@ cron.schedule('*/5 * * * *', () => { // every 5 minutes
 
 cron.schedule('*/5 * * * *', () => { // every 5 minutes
   syncBinanceSymbolsData('BTCUSDT')
-    .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
-    .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
+    .then(() => serverLogger.info('syncBinanceSymbolsData(\'BTCUSDT\') completed successfully'))
+    .catch((error) => serverLogger.error('Error running syncBinanceSymbolsData(\'BTCUSDT\'):', error))
 });
 
 cron.schedule('*/5 * * * *', () => { // every 5 minutes
   syncBinanceSymbolsData('ETHUSDT')
-    .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
-    .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))
+    .then(() => serverLogger.info('syncBinanceSymbolsData(\'ETHUSDT\') completed successfully'))
+    .catch((error) => serverLogger.error('Error running syncBinanceSymbolsData(\'ETHUSDT\'):', error))
 });
 
 cron.schedule('*/15 * * * *', () => { // every 15 minutes
