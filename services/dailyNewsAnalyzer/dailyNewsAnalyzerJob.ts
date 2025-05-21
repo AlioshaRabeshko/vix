@@ -6,7 +6,7 @@ export const queries = ['NASDAQ, S&P 500', 'stock market', 'economy', 'business'
 async function dailyNewsAnalyzerJob() {
   const todayString = new Date().toISOString().split('T')[0];
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setDate(yesterday.getDate() - 2);
   const yesterdayString = yesterday.toISOString().split('T')[0];
 
   for (const query of queries) {

@@ -49,7 +49,7 @@ export async function getGoogleTrends() {
       serverLogger.to('googleTrendsJob').error(`Failed to fetch trend for "${keyword}":`, err)
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 10000))
+    await new Promise((resolve) => setTimeout(resolve, 100000))
   }
   return trendsData;
 }
