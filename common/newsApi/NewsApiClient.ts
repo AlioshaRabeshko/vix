@@ -1,4 +1,4 @@
-import serverLogger from "common/logger/serverLogger";
+import serverLogger from 'common/logger/serverLogger';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const NewsAPI = require('newsapi');

@@ -3,9 +3,7 @@ import prisma from 'common/prisma/prisma';
 import serverLogger from 'common/logger/serverLogger';
 
 export const keywords = [
-  'recession',
   'usd collapse',
-  'bank collapse',
   'financial crisis',
 
   'stock market crash',

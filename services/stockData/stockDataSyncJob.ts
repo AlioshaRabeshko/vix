@@ -6,6 +6,10 @@ async function getETFData(ticker: string) {
     modules: ['summaryDetail', 'defaultKeyStatistics', 'financialData', 'price'],
   });
 
+  if (!result || !result.price || result.price.marketState === 'CLOSED') {
+    return null;
+  }
+
   const price = result.price?.regularMarketPrice|| null;
   const trailingPe = result.summaryDetail?.trailingPE || null;
   const forwardPe = result.defaultKeyStatistics?.forwardPE || null
@@ -13,20 +17,25 @@ async function getETFData(ticker: string) {
   return {price, forwardPe, trailingPe};
 };
 
-async function stockDataSyncJob() {
-  for (const ticker of ['QQQm', 'VOO', 'BRK-B', 'SCHD', 'JNK']) {
+async function syncTickers(tickers: string[]) {
+  for (const ticker of tickers) {
     const data = await getETFData(ticker);
+
+    if (!data) {
+      continue;
+    }
     
     await prisma.stock_data.create({data: {...data, ticker}});
   }
 }
+  
+
+async function stockDataSyncJob() {
+  await syncTickers(['QQQm', 'VOO', 'BRK-B', 'SCHD', 'JNK']);
+}
 
 export async function macroEconomicSyncJob() {
-  for (const ticker of ['DX-Y.NYB', '^GSPC', '^IXIC', 'GC=F', '^VXN', '^VIX']) {
-    const data = await getETFData(ticker);
-    
-    await prisma.stock_data.create({data: {...data, ticker}});
-  }
+  await syncTickers(['DX-Y.NYB', '^GSPC', '^IXIC', 'GC=F', '^VXN', '^VIX']);
 }
 
 export default stockDataSyncJob;

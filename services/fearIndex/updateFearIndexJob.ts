@@ -1,11 +1,18 @@
 import prisma from 'common/prisma/prisma';
-import getFearIndex from './getFearIndex';
+import {getWeekFearIndex, getMonthFearIndex} from './getFearIndex';
 
 async function updateFearIndexJob() {
-  const index = await getFearIndex();
-  await prisma.vix.create({
+  const indexWeekly = await getWeekFearIndex();
+  await prisma.vix_weekly.create({
     data: {
-      value: index,
+      value: indexWeekly,
+    },
+  });
+
+  const indexMonthly = await getMonthFearIndex();
+  await prisma.vix_monthly.create({
+    data: {
+      value: indexMonthly,
     },
   });
 }

@@ -7,6 +7,7 @@ import stockDataSyncJob, {macroEconomicSyncJob} from 'services/stockData/stockDa
 import updateFearIndexJob from 'services/fearIndex/updateFearIndexJob';
 import syncCryptoDataJob, {syncBinanceSymbolsData} from 'services/syncCryptoData/syncCryptoDataJob';
 import serverLogger from 'common/logger/serverLogger';
+import cnnDataSyncJob from 'services/cnnData/cnnDataSyncJob';
 
 serverLogger.info('Starting cron server');
 
@@ -20,6 +21,12 @@ cron.schedule('0 10,12,16,23 * * *', () => { // every day at 10 AM, 12 AM, 4 PM,
   putCallRatioSyncJob()
     .then(() => serverLogger.info('putCallRatioSyncJob completed successfully'))
     .catch((error) => serverLogger.error('Error running putCallRatioSyncJob:', error))
+});
+
+cron.schedule('0 10,12,16,23 * * *', () => { // every day at 10 AM, 12 AM, 4 PM, and 11 PM
+  cnnDataSyncJob()
+    .then(() => serverLogger.info('cnnDataSyncJob completed successfully'))
+    .catch((error) => serverLogger.error('Error running cnnDataSyncJob:', error))
 });
 
 cron.schedule('0 12,16,23 * * *', () => { // every day at 12 AM, 4 PM, and 11 PM
@@ -40,7 +47,7 @@ cron.schedule('*/5 * * * *', () => { // every 5 minutes
     .catch((error) => serverLogger.error('Error running macroEconomicSyncJob:', error))
 });
 
-cron.schedule('*/5 * * * *', () => { // every 5 minutes
+cron.schedule('*/15 * * * *', () => { // every 15 minutes
   updateFearIndexJob()
     .then(() => serverLogger.info('updateFearIndexJob completed successfully'))
     .catch((error) => serverLogger.error('Error running updateFearIndexJob:', error))

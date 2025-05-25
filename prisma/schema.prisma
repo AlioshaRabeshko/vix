@@ -47,7 +47,31 @@ model google_trends {
   @@unique([keyword, date], name: "keyword_date")
 }
 
+model cnn_data {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @default(now())
+  value     Float
+  rating    String
+  keyword   String
+  score     Int?
+  @@unique([keyword, date], name: "keyword_date")
+}
+
 model vix {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  value     Float
+  summary   String?
+}
+
+model vix_weekly {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  value     Float
+  summary   String?
+}
+
+model vix_monthly {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
   value     Float

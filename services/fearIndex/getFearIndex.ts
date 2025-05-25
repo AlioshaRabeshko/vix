@@ -1,92 +1,129 @@
-import {queries} from 'services/dailyNewsAnalyzer/dailyNewsAnalyzerJob';
 import prisma from 'common/prisma/prisma';
+import {groupBy} from 'lodash';
+import getZScore from 'common/statUtils/getZScore';
 
-async function getVolatilityIndex(toDate: Date) {
-  const {price} = await prisma.stock_data.findFirst({
-    select: {price: true},
-    where: {ticker: '^VIX', timestamp: {lte: toDate}},
-    orderBy: {timestamp: 'desc'},
-  });
-
-  return price;
-}
-
-async function getPutCallRatio(toDate: Date) {
-  const {value} = await prisma.put_call_ratio.findFirst({
+async function getPutCallRatio(fromDate: Date, toDate: Date) {
+  const data = await prisma.put_call_ratio.findMany({
     select: {value: true},
-    where: {timestamp: {lte: toDate}},
+    where: {timestamp: {lte: toDate, gte: fromDate}},
     orderBy: {timestamp: 'desc'},
   });
 
-  return value;
+  return data.map(({value}) => value);
 }
 
-async function getNewsFearIndex(toDate: Date) {
+async function getNewsFearIndex(fromDate: Date, toDate: Date) {
   const data = await prisma.daily_news_analysis.findMany({
-    select: {rating: true},
-    where: {timestamp: {lte: toDate}},
-    orderBy: {timestamp: 'desc'},
-    take: queries.length
+    select: {rating: true, query: true},
+    where: {timestamp: {lte: toDate, gte: fromDate}},
+    orderBy: {timestamp: 'desc'}
   });
 
-  return data.reduce((acc, {rating}) => acc + rating, 0) / data.length;
+  const groupedData = groupBy(data, 'query');
+  const groupedResult: {[key in string]: number[]} = {};
+  for (const key of Object.keys(groupedData)) {
+    groupedResult[key] = groupedData[key].map(({rating}) => rating);
+  }
+
+  return groupedResult;
 }
 
-async function getStockWeeklyChange(ticker: string) {
-  const today = new Date();
-  const weekAgo = new Date();
-  weekAgo.setDate(today.getDate() - 7);
-
+async function getTickerData(ticker: string, fromDate: Date, toDate: Date) {
   const data = await prisma.stock_data.findMany({
     select: {price: true},
     where: {
       ticker,
-      timestamp: {gte: weekAgo, lte: today},
+      timestamp: {lte: toDate, gte: fromDate},
     },
-    orderBy: {timestamp: 'asc'},
+    orderBy: {timestamp: 'desc'},
   });
 
-  if (data.length < 2) return null;
-
-  const startPrice = data[0].price;
-  const endPrice = data[data.length - 1].price;
-
-  return (endPrice - startPrice) / startPrice;
+  return data.map(({price}) => price);
 }
 
-async function getGoogleTrendsFearIndex(toDate: Date) {
-  const utcDate = new Date(Date.UTC(toDate.getFullYear(), toDate.getMonth(), toDate.getDate()));
+async function getGoogleTrendsData(fromDate: Date, toDate: Date) {
   const data = await prisma.google_trends.findMany({
-    select: {value: true},
-    where: {date: utcDate},
+    select: {value: true, keyword: true},
+    where: {date: {lte: toDate, gte: fromDate}, keyword: {notIn: ['bitcoin', 'ethereum']}},
     orderBy: {timestamp: 'desc'}
   });
 
-  return data.reduce((acc, {value}) => acc + value, 0) / data.length;
+  const groupedData = groupBy(data, 'keyword');
+  const groupedResult: {[key in string]: number[]} = {};
+  for (const key of Object.keys(groupedData)) {
+    groupedResult[key] = groupedData[key].map(({value}) => value);
+  }
+
+  return groupedResult;
 }
 
-async function getFearIndex() {
+async function getCnnFearGreedIndex(fromDate: Date, toDate: Date) {
+  const data = await prisma.cnn_data.findMany({
+    select: {value: true},
+    where: {date: {lte: toDate, gte: fromDate}, keyword: 'fear_and_greed_historical'},
+    orderBy: {date: 'desc'},
+  });
+
+  return data.map(({value}) => value);
+}
+
+async function getFearIndex(fromDate: Date, toDate: Date) {
+  const ninetyDaysAgo = new Date(toDate);
+  ninetyDaysAgo.setDate(fromDate.getDate() - 90);
+
+  const [lastPutCallRatio, ...restPutCallRation] = await getPutCallRatio(fromDate, toDate);
+  const putCallRatioZScore = getZScore(lastPutCallRatio, restPutCallRation);
+
+  const newsFearIndexData = await getNewsFearIndex(ninetyDaysAgo, toDate);
+  let newsAvgZScore = 0;
+  for (const [, [lastNewsIndex, ...restNewsIndex]] of Object.entries(newsFearIndexData)) {
+    newsAvgZScore += getZScore(lastNewsIndex, restNewsIndex);
+  }
+  newsAvgZScore /= Object.keys(newsFearIndexData).length;
+
+  const googleTrendsData = await getGoogleTrendsData(ninetyDaysAgo, toDate);
+  let googleTrendsAvgZScores = 0;
+  for (const [, [lastGoogleTrendsIndex, ...restGoogleTrendsIndex]] of Object.entries(googleTrendsData)) {
+    googleTrendsAvgZScores += getZScore(lastGoogleTrendsIndex, restGoogleTrendsIndex);
+  }
+  googleTrendsAvgZScores /= Object.keys(googleTrendsData).length;
+  
+  const [lastVolatilityIndex, ...restVolatilityIndex] = await getTickerData('^VXN', fromDate, toDate); // Nasdaq volatility index
+  const volatilityIndexZScore = getZScore(lastVolatilityIndex, restVolatilityIndex);
+
+  const [lastNasdaqIndex, ...restNasdaqIndex] = await getTickerData('^IXIC', fromDate, toDate); // Nasdaq index
+  const nasdaqZScore = getZScore(lastNasdaqIndex, restNasdaqIndex);
+
+  const [lastGoldPrice, ...restGoldPrices] = await getTickerData('GC=F', fromDate, toDate); // Gold price
+  const goldZScore = getZScore(lastGoldPrice, restGoldPrices);
+
+  const [lastDxyIndex, ...restDxyIndex] = await getTickerData('DX-Y.NYB', fromDate, toDate); // US Dollar Index
+  const dxyZScore = getZScore(lastDxyIndex, restDxyIndex);
+
+  const normalizedPutCallRatio = 0.2  * putCallRatioZScore;
+  const normalizedNewsFearIndex = 0.15 * newsAvgZScore;
+  const normalizedGoogleTrendsFearIndex = 0.1 * googleTrendsAvgZScores;
+  const normalizedVolatilityIndex = 0.25 * volatilityIndexZScore;
+  const normalizedNasdaqIndex = -0.2 * nasdaqZScore;
+  const normalizedGoldPrice = 0.15 * goldZScore;
+  const normalizedDxyIndex = -0.1 * dxyZScore;
+
+  const fearIndex = normalizedPutCallRatio + normalizedNewsFearIndex +
+    normalizedGoogleTrendsFearIndex + normalizedVolatilityIndex + normalizedNasdaqIndex +
+    normalizedGoldPrice + normalizedDxyIndex;
+  return (fearIndex + 1) * 5;
+}
+
+export async function getWeekFearIndex() {
   const today = new Date();
-
-  const volatilityIndex = await getVolatilityIndex(today); // scale 10–20: 0–1, 20–30: 1–1.5, 30–40: 1.5–2
-  const putCallRatio = await getPutCallRatio(today); // >1.1 — 1 бал, >1.3 — 1.5
-  const newsFearIndex = await getNewsFearIndex(today); // scale 0-2
-  const qqqmWeeklyChange = await getStockWeeklyChange('QQQm'); // падіння 5% = 1 бал
-  const hyBondsWeeklyChange = await getStockWeeklyChange('JNK'); // падіння 5% = 1 бал
-  const goldWeeklyChange = await getStockWeeklyChange('GLD'); // зростання 5% = 1 бал
-  const googleTrendsFearIndex = await getGoogleTrendsFearIndex(today); // scale 0-1
-
-  const normalizedVolatilityIndex = volatilityIndex / 20;
-  const normalizedPutCallRatio = putCallRatio > 1.3 ? 1.5 : putCallRatio > 1.1 ? 1 : 0;
-  const normalizedNewsFearIndex = newsFearIndex > 7 ? 2 : newsFearIndex > 4 ? 1 : 0;
-  const normalizedQQQMWeeklyChange = qqqmWeeklyChange <= 0.95 ? 1 : 0;
-  const normalizedHYBondsWeeklyChange = hyBondsWeeklyChange <= 0.95 ? 1 : 0;
-  const normalizedGoldWeeklyChange = goldWeeklyChange >= 1.05 ? 1 : 0;
-  const normalizedGoogleTrendsFearIndex = googleTrendsFearIndex ? googleTrendsFearIndex / 100 : 0;
-
-  return normalizedVolatilityIndex + normalizedPutCallRatio + normalizedNewsFearIndex +
-    normalizedQQQMWeeklyChange + normalizedHYBondsWeeklyChange + normalizedGoldWeeklyChange +
-    normalizedGoogleTrendsFearIndex;
+  const weekAgo = new Date();
+  weekAgo.setDate(today.getDate() - 7);
+  return await getFearIndex(weekAgo, today);
 }
 
-export default getFearIndex;
+export async function getMonthFearIndex() {
+  const today = new Date();
+  const monthAgo = new Date();
+  monthAgo.setMonth(today.getMonth() - 1);
+  return await getFearIndex(monthAgo, today);
+}

@@ -1,7 +1,7 @@
 import prisma from 'common/prisma/prisma';
 import analyzeNews from './analyzeNews';
 
-export const queries = ['NASDAQ, S&P 500', 'stock market', 'economy', 'business'];
+export const queries = ['NASDAQ, S&P 500', 'stock market', 'economy', 'business', 'financial crisis'];
 
 async function dailyNewsAnalyzerJob() {
   const todayString = new Date().toISOString().split('T')[0];
